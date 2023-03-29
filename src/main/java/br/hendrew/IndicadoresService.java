@@ -3,15 +3,10 @@ package br.hendrew;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 
+import br.hendrew.api.rest.bindings.*;
 import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Logger;
 
-import br.hendrew.api.rest.bindings.GranteeCapabilitiesType;
-import br.hendrew.api.rest.bindings.GroupType;
-import br.hendrew.api.rest.bindings.ProjectListType;
-import br.hendrew.api.rest.bindings.ProjectType;
-import br.hendrew.api.rest.bindings.TableauCredentialsType;
-import br.hendrew.api.rest.bindings.WorkbookType;
 import br.hendrew.api.rest.util.RestApiUtils;
 
 import java.io.File;
@@ -53,6 +48,49 @@ public class IndicadoresService {
         s_logger.info(String.format("Site ID: %s", currentSiteId));
         return credential;
     }
+
+    public ProjectListType pegarProjetos(){
+        String username = s_properties.getProperty("user.admin.name");
+        String password = s_properties.getProperty("user.admin.password");
+        String contentUrl = s_properties.getProperty("site.default.contentUrl");
+        // Signs in to server and saves the authentication token, site ID, and current user ID
+        TableauCredentialsType credential = s_restApiUtils.invokeSignIn(username, password, contentUrl);
+        String currentSiteId = credential.getSite().getId();
+        String currentUserId = credential.getUser().getId();
+
+
+        ProjectListType projects = s_restApiUtils.invokeQueryProjects(credential, currentSiteId);
+        return projects;
+    }
+
+    public SiteListType pegarSites(){
+        String username = s_properties.getProperty("user.admin.name");
+        String password = s_properties.getProperty("user.admin.password");
+        String contentUrl = s_properties.getProperty("site.default.contentUrl");
+        // Signs in to server and saves the authentication token, site ID, and current user ID
+        TableauCredentialsType credential = s_restApiUtils.invokeSignIn(username, password, contentUrl);
+        String currentSiteId = credential.getSite().getId();
+        String currentUserId = credential.getUser().getId();
+
+        SiteListType projects = s_restApiUtils.invokeQuerySites(credential);
+        return projects;
+    }
+
+    public WorkbookListType pegarWorkbookListType(){
+        String username = s_properties.getProperty("user.admin.name");
+        String password = s_properties.getProperty("user.admin.password");
+        String contentUrl = s_properties.getProperty("site.default.contentUrl");
+        // Signs in to server and saves the authentication token, site ID, and current user ID
+        TableauCredentialsType credential = s_restApiUtils.invokeSignIn(username, password, contentUrl);
+        String currentSiteId = credential.getSite().getId();
+        String currentUserId = credential.getUser().getId();
+
+        WorkbookListType projects = s_restApiUtils.invokeQueryWorkbooks(credential, currentSiteId,currentUserId );
+        return projects;
+    }
+
+
+
 
     public TableauCredentialsType montarResto() {
 
